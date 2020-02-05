@@ -13,36 +13,61 @@ displayFrontend = function () {
 
     console.log(main_container);
     const object_list = callBackend();
+    const children_container = document.createElement("table");
+    children_container.className = "striped";
+    const tbody = document.createElement("tbody");
+    main_container.appendChild(children_container);
+    children_container.appendChild(tbody);
 
+    
+    
     object_list.forEach(
         (data_obj) => {
-            const children_container = document.createElement("div");
-            children_container.className = "card";
-            main_container.appendChild(children_container);
+            
+            let tr = document.createElement("tr");
+            tbody.appendChild(tr);
 
-            let camera_header = document.createElement("h2");
+            let camera_header = document.createElement("td");
             camera_header.textContent = data_obj.camera_no;
-            children_container.appendChild(camera_header);
+            tr.appendChild(camera_header);
 
-            let ts = document.createElement("p");
+            let ts = document.createElement("td");
             ts.textContent = data_obj.timestamp;
             ts.style.fontSize = "1.3rem";
-            children_container.appendChild(ts); 
+            tr.appendChild(ts); 
 
-            let rs = document.createElement("p");
+            let rs = document.createElement("td");
             rs.textContent = data_obj.regex_string;
             rs.style.fontSize = "1.3rem";
-            children_container.appendChild(rs);
+            tr.appendChild(rs);
+            
+            
 
             let image = document.createElement("img");
             image.src = data_obj.image_link;
-            children_container.appendChild(image);
+            image.style.width="50px";
+            image.style.height="30px";
+
+            let modal_init = document.createElement("span");
+            modal_init.href = data_obj.image_link;
+            modal_init.dataTarget = "modal1";
+            modal_init.className = "modal-trigger";
+            modal_init.appendChild(image);
+            modal_init.onclick=initializeModal;
+            tr.appendChild(modal_init);
         }
     );
 
     // Call the callBackend method and add elemets to the DOM through looping.
 }
 
+function initializeModal(e){
+    console.log(e.target.src);
+
+    var elems = document.querySelectorAll('.modal');
+    M.Modal.init(elems, {});
+    
+}
 
 callBackend = function () {
     // Call data from the backend
@@ -68,4 +93,23 @@ callBackend = function () {
     return object_list;
 }
 
+
 displayFrontend();
+
+
+function parseDOM(){
+    let parser = new DOMParser();
+
+
+    let parsedString = parser.parseFromString("<div> Hello i am parsed </div>","text/html");
+
+    console.log(parsedString);
+
+    
+    console.log(parsedString.body.childNodes[0].textContent);
+}
+
+
+parseDOM();
+
+document.addEventListener('DOMContentLoaded',initializeModal);
